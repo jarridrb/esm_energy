@@ -6,7 +6,6 @@
 from pathlib import Path
 from typing import List, Optional, Dict
 import torch
-import tree
 from omegaconf import DictConfig
 
 from esm_reward.utils.scheduler import SchedulerSpec
@@ -74,7 +73,7 @@ def stage_free_generation(
 
 def set_target_structure(designer, sampled_dist_and_angles):
     """
-    Set the given sampled contacts as the target structure in designer. This allows designing 
+    Set the given sampled contacts as the target structure in designer. This allows designing
     a sequence for that structure later.
     """
 
@@ -88,7 +87,7 @@ def set_target_structure(designer, sampled_dist_and_angles):
     cutoff_bin_max = designer.pdb_loader_params['contact_bin_cutoff'][1]
     # Use resnet predictons to determine the
     designer.target_contacts = (designer.coords[:, 0] <= cutoff_bin_max).squeeze(0)
-    
+
     designer.target_no_contacts = ~designer.target_contacts
     # TEMP; assume  Batchdim==1 (also for gibbs).
     assert_shape(designer.target_contacts, designer.L, designer.L)

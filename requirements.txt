@@ -1,3 +1,5 @@
 nltk
 py3Dmol
-hydra
+tree
+fair-esm
+pandas

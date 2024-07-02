@@ -13,7 +13,7 @@ from torch import nn
 from torch.nn import functional as F
 from abc import ABC, abstractmethod
 import hydra
-import os 
+import os
 
 from esm_reward.utils.linear_projection import LinearProjectionDistogramModel
 
@@ -58,7 +58,7 @@ class WrapStruct(nn.Module, ABC):
 
 
 def load(vocab: Alphabet) -> Tuple[nn.Module, Dict]:
-        
+
     pdb_loader_params = PDB_LOADER_PARAM_REGISTRY['LinearProjectionDist-1A']
     model = load_model()
     has_eos = True
@@ -67,11 +67,11 @@ def load(vocab: Alphabet) -> Tuple[nn.Module, Dict]:
 
 def load_model():
     model_url_path = 'https://dl.fbaipublicfiles.com/fair-esm/examples/lm_design/linear_projection_model.pt'
-    local_model_path = hydra.utils.to_absolute_path('./linear_projection_model.pt')
+    local_model_path = hydra.utils.to_absolute_path('/home/mila/j/jarrid.rector-brooks/repos/eval_gfn_repo/linear_projection_model.pt')
     if not os.path.exists(local_model_path):
         logger.info(f'Downloading linear projection model from {model_url_path} to {local_model_path}')
         os.system(f'wget {model_url_path} -O {local_model_path}')
-        
+
     # load model_path
     state = torch.load(local_model_path, map_location='cpu')
     # chkpt_args = state['cfg']
@@ -82,7 +82,7 @@ def load_model():
     base_model, alphabet = esm2_t33_650M_UR50D()
     model.base_model = base_model
     return model
-   
+
 
 class WrapStructModel(WrapStruct):
     def forward(self, seq1h, pos_idx=None):
@@ -118,7 +118,7 @@ class WrapStructModel(WrapStruct):
     def _process_output(out_dict):
         for k in ('logits', 'theta_logits', 'phi_logits', 'omega_logits'):
             out_dict[k] = out_dict[k].permute(0, 2, 3, 1).contiguous()
-        
+
         if 'logits' in out_dict:
             out_dict['dist_logits'] = out_dict['logits']
             del out_dict['logits']
